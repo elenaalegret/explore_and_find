@@ -1,0 +1,24 @@
+<launch>
+    <!-- Frontier Exploration Node -->
+    <node pkg="frontier_exploration" type="frontier_exploration_node" respawn="false" name="explore" output="screen">
+        <rosparam command="load" file="$(find frontier_exploration)/config/params.yaml"/>
+        <remap from="costmap" to="/map"/>
+    </node>
+
+    <!-- Find Object 2D Node -->
+    <arg name="gui" default="true"/>
+    <arg name="image_topic" default="/camera/rgb/image_raw"/>
+    <arg name="objects_path" default="~/objects"/>
+    <arg name="settings_path" default="~/.ros/find_object_2d.ini"/>
+
+    <node name="find_object_2d" pkg="find_object_2d" type="find_object_2d" output="screen">
+        <remap from="image" to="$(arg image_topic)"/>
+        <param name="gui" value="$(arg gui)" type="bool"/>
+        <param name="objects_path" value="$(arg objects_path)" type="str"/>
+        <param name="settings_path" value="$(arg settings_path)" type="str"/>
+    </node>
+
+    <!-- Explore and Find Node (custom node) -->
+    <node name="explore_and_find" pkg="explore_and_find" type="explore_and_find.py" output="screen"/>
+</launch>
+

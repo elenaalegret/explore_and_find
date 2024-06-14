@@ -1,0 +1,19 @@
+<launch>
+
+    <!-- Lanzar el nodo de Frontier Exploration -->
+    <node pkg="frontier_exploration" type="frontier_exploration_node" respawn="false" name="explore" output="screen">
+        <rosparam command="load" file="$(find frontier_exploration)/config/params.yaml"/>
+        <remap from="costmap" to="/map"/>
+    </node>
+
+    <!-- Lanzar el nodo de Find Object 2D -->
+    <arg name="image_topic" default="/camera/image" />
+    <node name="find_object_2d" pkg="find_object_2d" type="find_object_2d" output="screen">
+        <remap from="image" to="$(arg image_topic)" />
+    </node>
+
+
+    <!-- Lanzar el nodo combinado de exploración y búsqueda de objetos -->
+    <node name="explore_and_find" pkg="explore_and_find" type="explore_and_find.py" output="screen"/>
+</launch>
+
