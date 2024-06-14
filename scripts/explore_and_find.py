@@ -18,17 +18,13 @@ class ExploreAndFind:
     def __init__(self):
         # Inicializa el nodo ROS
         rospy.init_node('explore_and_find', anonymous=True)
-        print('\n HOLAAAAA! 1\n')
         self.cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
         self.bool_pub = rospy.Publisher('/object_detected', Bool, queue_size=1)
         self.joint_pub = rospy.Publisher('/joint_trajectory_point', Float64MultiArray, queue_size=1)  # Publicador para los estados de las juntas
 
-        print('\n HOLAAAAA! 3 - continue with obj stamp \n')
         # Suscribe al tema de objetos detectados y define el callback para procesar los datos
         rospy.Subscriber('/objectsStamped', ObjectsStamped, self.object_callback)
 
-        print('\n HOLAAAAA! 4 object stamped in processs \n')
-        print('\n HOLAAAAA! 5 - finish exploration \n')
 
         
         self.not_detected = True
@@ -47,14 +43,13 @@ class ExploreAndFind:
 
     def object_callback(self, data):
         # Procesa los objetos detectados
-        print('\n HOLAAAAA! 2 - holA \n')
         print(data)
         if data.objects.data:  # Si hay algún objeto detectado
             print(data.objects)
             rospy.loginfo(f"Objeto detectado: {data.objects.data[0]}")  # Muestra información sobre el objeto detectado
             self.bool_pub.publish(True)
             self.stop_robot()
-            self.lift_arm()
+            self.lift_arm(data.objects.data[0])
 
     def stop_robot(self):
         # Detiene el robot publicando un mensaje de velocidad con todos los componentes en cero
@@ -71,19 +66,37 @@ class ExploreAndFind:
         clean_upper = minimum(clean_lower, upper_limits)
         return list(clean_upper)
 
-    def lift_arm(self):
-        # Levanta el brazo publicando un mensaje de Float64MultiArray
-        joint_pos = Float64MultiArray()
-        joint_pos.layout.dim.append(std_msgs.msg.MultiArrayDimension())
-        joint_pos.layout.dim[0].label = ''
-        joint_pos.layout.dim[0].size = 7
-        joint_pos.layout.dim[0].stride = 7
-        joint_pos.layout.data_offset = 0
-        joint_pos.data = self.clean_joint_states([0, 0, 0.5, -1, 3.14, 1.57, 0])
+    def lift_arm(self, num):
+        
+        if int(num) == 1:
+            # Levanta el brazo publicando un mensaje de Float64MultiArray
+            joint_pos = Float64MultiArray()
+            joint_pos.layout.dim.append(std_msgs.msg.MultiArrayDimension())
+            joint_pos.layout.dim[0].label = ''
+            joint_pos.layout.dim[0].size = 7
+            joint_pos.layout.dim[0].stride = 7
+            joint_pos.layout.data_offset = 0
+            joint_pos.data = self.clean_joint_states([0, 0, 0.5, -1, 3.14, 1.57, 0])
 
-        rospy.loginfo(f"Publicando Float64MultiArray: {joint_pos}")
-        self.joint_pub.publish(joint_pos)
-        rospy.loginfo("Brazo levantado.")
+            rospy.loginfo(f"Publicando Float64MultiArray: {joint_pos}")
+            self.joint_pub.publish(joint_pos)
+            rospy.loginfo("Brazo levantado, se ha encontrado warning")
+        
+        elif int(num) == 2:
+            
+            # Levanta el brazo publicando un mensaje de Float64MultiArray
+            joint_pos = Float64MultiArray()
+            joint_pos.layout.dim.append(std_msgs.msg.MultiArrayDimension())
+            joint_pos.layout.dim[0].label = ''
+            joint_pos.layout.dim[0].size = 7
+            joint_pos.layout.dim[0].stride = 7
+            joint_pos.layout.data_offset = 0
+            joint_pos.data = self.clean_joint_states([0, 0, 0.5, -1, 3.14, 1.57, 6.28])
+
+            rospy.loginfo(f"Publicando Float64MultiArray: {joint_pos}")
+            self.joint_pub.publish(joint_pos)
+            rospy.loginfo("Brazo levantado, se ha encontrado STOP")
+
 
     def joint_callback(self, data):
         print("Msg: {}".format(data.header.seq))
