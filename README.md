@@ -6,6 +6,12 @@
 
 This project extends the `frontier_exploration` ROS node to enable external control by detecting specific signals like warnings or stops. It combines environment exploration with object detection.
 
+#### Robot Exploration Flowchart
+
+![Flowchart](.diagram.png)
+
+
+
 ## Features
 
 - **Exploration**: Uses `frontier_exploration` to map unknown areas.
