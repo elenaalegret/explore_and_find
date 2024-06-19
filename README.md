@@ -8,7 +8,7 @@ This project extends the `frontier_exploration` ROS node to enable external cont
 
 #### Robot Exploration Flowchart
 
-![Flowchart](.diagram.png)
+<img src=".diagram.png)" alt="diagram" width="400">
 
 
 
