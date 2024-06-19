@@ -59,9 +59,9 @@ This project extends the `frontier_exploration` ROS node to enable external cont
      - Load the `signals` folder into the interface where the camera feed is displayed.
      - <img src=".signals_folder.png" alt="logo" width="200">
    - T6: `roslaunch turtlebot3_navigation move_base.launch`
-```
 
 
+## Package Structure
 
 ```plaintext
 .
