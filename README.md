@@ -16,10 +16,10 @@ This project extends the `frontier_exploration` ROS node to enable external cont
 
 1. **Clone the repositories**:
     
-       ```sh
-       cd roscd
-       cd ../src
-       ```
+    ```sh
+   cd roscd
+   cd ../src
+    ```
 
     - Our custom Explore and Find node:
       ```sh
