@@ -1,4 +1,4 @@
-<img src=".logo.png" alt="logo" width="200">
+<img src="graphics/logo.png" alt="logo" width="200">
 
 # Explore and Find Node
 
@@ -8,7 +8,7 @@ This project extends the `frontier_exploration` ROS node to enable external cont
 
 #### Robot Exploration Flowchart
 
-<img src=".diagram.png" alt="diagram" width="400">
+<img src="graphics/diagram.png" alt="diagram" width="400">
 
 
 
@@ -63,7 +63,7 @@ This project extends the `frontier_exploration` ROS node to enable external cont
    - T4: `roslaunch turtlebot3_slam turtlebot3_slam.launch slam_methods:=gmapping`
    - T5: `roslaunch explore_and_find explore_and_find_with_camera.launch`
      - Load the `signals` folder into the interface where the camera feed is displayed.
-     - <img src=".signals_folder.png" alt="logo" width="200">
+     - <img src="graphics/signals_folder.png" alt="logo" width="200">
    - T6: `roslaunch turtlebot3_navigation move_base.launch`
 
 
