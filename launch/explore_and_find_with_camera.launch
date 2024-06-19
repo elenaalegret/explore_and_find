@@ -1,19 +1,25 @@
 <launch>
 
-    <!-- Lanzar el nodo de Frontier Exploration -->
+    <!-- Launch the Frontier Exploration node -->
+    <!-- This node is responsible for exploring unknown areas in the environment -->
     <node pkg="frontier_exploration" type="frontier_exploration_node" respawn="false" name="explore" output="screen">
+        <!-- Load parameters from the specified YAML file -->
         <rosparam command="load" file="$(find frontier_exploration)/config/params.yaml"/>
+        <!-- Remap the costmap topic to the /map topic -->
         <remap from="costmap" to="/map"/>
     </node>
 
-    <!-- Lanzar el nodo de Find Object 2D -->
+    <!-- Launch the Find Object 2D node -->
+    <!-- This node is responsible for detecting objects in the camera images -->
     <arg name="image_topic" default="/camera/image" />
     <node name="find_object_2d" pkg="find_object_2d" type="find_object_2d" output="screen">
+        <!-- Remap the image topic to the specified image_topic argument -->
         <remap from="image" to="$(arg image_topic)" />
     </node>
 
-
-    <!-- Lanzar el nodo combinado de exploración y búsqueda de objetos -->
+    <!-- Launch the combined exploration and object-finding node -->
+    <!-- This node extends the functionality of frontier_exploration and adds external control capabilities -->
+    <!-- It detects specific objects such as warning and stop signals, allowing operators to control the robot's exploration -->
     <node name="explore_and_find" pkg="explore_and_find" type="explore_and_find.py" output="screen"/>
 </launch>
 
