@@ -8,7 +8,9 @@ This project extends the `frontier_exploration` ROS node to enable external cont
 
 #### Robot Exploration Flowchart
 
-<img src="graphics/diagram.png" alt="diagram" width="400">
+<div style="text-align: center;">
+    <img src="graphics/diagram.png" alt="diagram" width="600" style="display: block; margin: auto;">
+</div>
 
 
 
