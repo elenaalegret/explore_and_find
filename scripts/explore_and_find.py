@@ -1,21 +1,49 @@
 #!/usr/bin/env python
 
-import rospy  # Importa la biblioteca de ROS para Python
-from find_object_2d.msg import ObjectsStamped  # Importa el mensaje para los objetos detectados
+"""
+*************************
+** ExploreAndFind Node **
+*************************
+
+This script extends the frontier_exploration node for a robotic system using ROS (Robot Operating System). 
+The ExploreAndFind node enables external control by operators, allowing them to manage exploration and 
+mapping processes without needing internal knowledge of the system. 
+It specifically detects images of signals such as warnings or stops and triggers appropriate actions.
+
+Main Features:
+- Initializes the ROS node and sets up publishers and subscribers.
+- Detects objects and triggers appropriate callbacks.
+- Publishes commands to control the robot's movement and joint positions.
+- Handles specific actions for detected objects, including stopping the robot and raising the arm.
+
+Dependencies:
+- rospy: ROS Python client library
+- find_object_2d.msg: Messages for detected objects
+- geometry_msgs.msg: Messages for robot movement commands
+- std_srvs.srv: Standard service definitions
+- std_msgs.msg: Standard message definitions
+
+Additional Nodes Required:
+- find_object_2d: For object detection
+- frontier_exploration: For exploring unknown areas
+"""
+
+# IMPORTS_____
+import rospy  # Importem ROS
+from find_object_2d.msg import ObjectsStamped 
 from geometry_msgs.msg import Twist
 from std_srvs.srv import Empty
 from std_msgs.msg import Bool
-from std_msgs.msg import Float64MultiArray  # Importa el mensaje para el control de las articulaciones
+from std_msgs.msg import Float64MultiArray  
 from numpy import maximum, minimum
 import std_msgs
-import subprocess
 
 
-print("\n Començem l'exploració!\n")
+print("\n ************ Starting exploration! ************ \n\n\n\n")
 
 class ExploreAndFind:
     def __init__(self):
-        # Inicializa el nodo ROS
+        
         rospy.init_node('explore_and_find', anonymous=True)
         self.cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
         self.bool_pub = rospy.Publisher('/object_detected', Bool, queue_size=1)
@@ -48,7 +76,7 @@ class ExploreAndFind:
     def object_callback(self, data):
         if data.objects.data:  # Si trobem algun objecte detectat
             #print(data.objects) # Per mirar estructura objecte data
-            rospy.loginfo(f"\n\n => Objecte detectat: {data.objects.data[0]}")  # Printem index objecte
+            rospy.loginfo(f"\n\n => Object detected: {data.objects.data[0]}")  # Print object index
             self.bool_pub.publish(True) # Parem el robot
             self.lift_arm(data.objects.data[0])
 
@@ -62,7 +90,6 @@ class ExploreAndFind:
 
     def lift_arm(self, num):
 
-
     	# WARNING
         if int(num) == 1:
             # Aixequem el braç, parem el moviment uns 10 segons, i tornem a posar en marxa la exploració.      
@@ -74,9 +101,9 @@ class ExploreAndFind:
             joint_pos.layout.data_offset = 0
             joint_pos.data = self.clean_joint_states([0, 0, 0.5, -1, 3.14, 1.57, 0])
 
-            rospy.loginfo(f"Publicant Float64MultiArray: {joint_pos}")
+            rospy.loginfo(f"Publishing Float64MultiArray: {joint_pos}")
             self.joint_pub.publish(joint_pos)
-            rospy.loginfo("\n\n!!!!!!!!!Braç aixecat, s'ha trobat WARNING!!!!!!!!!!\n\n")
+            rospy.loginfo("\n\n!!!!!!!!! Arm raised, WARNING detected !!!!!!!!!!\n\n")
             
             rospy.sleep(2) # Pausem el robot 2 segons
             self.warn_pub.publish(True) # Avisem pel warning
@@ -97,9 +124,9 @@ class ExploreAndFind:
             joint_pos.layout.data_offset = 0
             joint_pos.data = self.clean_joint_states([0, 0, 0.5, -1, 3.14, 1.57, 3.14])
 
-            rospy.loginfo(f"Publicando Float64MultiArray: {joint_pos}")
+            rospy.loginfo(f"Publishing Float64MultiArray: {joint_pos}")
             self.joint_pub.publish(joint_pos)
-            rospy.loginfo("\n\n!!!!!!!!!! Braç aixecat, s'ha trobat STOP, parem el moviment !!!!!!!!!!")
+            rospy.loginfo("\n\n!!!!!!!!!! Arm raised, STOP detected, stopping movement !!!!!!!!!!")
             self.not_detected_stop = False
         
 
@@ -118,9 +145,9 @@ class ExploreAndFind:
             joint_pos.layout.data_offset = 0
             joint_pos.data = self.clean_joint_states([0, 0, 0.5, -1, 3.14, 1.57, 0])
 
-            rospy.loginfo(f"Publicando Float64MultiArray: {joint_pos}")
+            rospy.loginfo(f"Publishing Float64MultiArray: {joint_pos}")
             self.joint_pub.publish(joint_pos)
-            rospy.loginfo("\n\n!!!!!!!!!! Braç aixecat, s'ha trobat un objecte classificat, parem el moviment !!!!!!!!!!")
+            rospy.loginfo("\n\n!!!!!!!!!! Arm raised, classified object detected, stopping movement !!!!!!!!!!")
 
 
     def joint_callback(self, data):
