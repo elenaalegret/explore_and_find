@@ -1,4 +1,4 @@
-<img src=".logo.png" alt="logo" width="150">
+<img src=".logo.png" alt="logo" width="200">
 
 # Explore and Find Node
 
@@ -46,11 +46,22 @@ This project extends the `frontier_exploration` ROS node to enable external cont
 ## Usage
 
 1. **Launch the nodes**:
-    ```sh
-    roslaunch explore_and_find explore_and_find_with_camera.launch
-    ```
 
-## File Structure
+   - T1: `roscore`
+   
+   - T2: `ssh ubuntu@{robot_ip}`
+   - T2: `roslaunch turtlebot3_bringup turtlebot3_robot.launch`
+   
+   - T3: `ssh ubuntu@{robot_ip}`
+   - T3: `roslaunch turtlebot3_bringup turtlebot3_rpicamera.launch`
+   - T4: `roslaunch turtlebot3_slam turtlebot3_slam.launch slam_methods:=gmapping`
+   - T5: `roslaunch explore_and_find explore_and_find_with_camera.launch`
+     - Load the `signals` folder into the interface where the camera feed is displayed.
+     - <img src=".signals_folder.png" alt="logo" width="200">
+   - T6: `roslaunch turtlebot3_navigation move_base.launch`
+```
+
+
 
 ```plaintext
 .
@@ -69,6 +80,6 @@ This project extends the `frontier_exploration` ROS node to enable external cont
 - **launch/explore_and_find_with_camera.launch**: ROS launch file to start the nodes required for the system, including `frontier_exploration`, `find_object_2d`, and `explore_and_find.py`.
 - **package.xml**: Describes the ROS package, including dependencies and metadata.
 - **scripts/explore_and_find.py**: Implements the `explore_and_find` node, combining environment exploration and object detection.
-- **signals/1.png**: Image file representing a **warning** signal.
-- **signals/2.png**: Image file representing a **stop** signal.
+- **signals/1.png**: Image file representing a **Warning** signal.
+- **signals/2.png**: Image file representing a **Stop** signal.
 
